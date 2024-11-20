@@ -79,10 +79,13 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
+        'host': 'localhost',
+        'user': 'postgres',
+        'password': 'coderslab',
+        'dbname': 'katalogKsiazek',
+        'port': 5432,
     }
 }
-
-
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
