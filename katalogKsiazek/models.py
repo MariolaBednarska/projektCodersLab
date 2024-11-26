@@ -1,31 +1,65 @@
 from django.db import models
 
 # Create your models here.
-class Book(models.Model):
-    class BookStatus(models.TextChoices):
-        AVAILABLE = 'available', _('Available')
-        BORROWED = 'borrowed', _('Borrowed')
-        RESERVED = 'reserved', _('Reserved')
-        UNAVAILABLE = 'unavailable', _('Unavailable')
+BOOKSHELF = (
+    (1, "Półka 1"),
+    (2, "Półka 2"),
+    (3, "Półka 3"),
+    (4, "Półka 4"),
+    (5, "Półka 5"),
+    (6, "Półka 6"),
+    (7, "Półka 7"),
+)
 
-    title = models.CharField(max_length=255, verbose_name="Title")
-    author = models.CharField(max_length=255, verbose_name="Author")
-    isbn = models.CharField(max_length=13, unique=True, verbose_name="ISBN")
-    publisher = models.CharField(max_length=255, verbose_name="Publisher", blank=True, null=True)
-    publication_year = models.PositiveIntegerField(verbose_name="Year of Publication", blank=True, null=True)
-    status = models.CharField(
-        max_length=20,
-        choices=BookStatus.choices,
-        default=BookStatus.AVAILABLE,
-        verbose_name="Status"
-    )
-    added_at = models.DateTimeField(auto_now_add=True, verbose_name="Date Added")
-    updated_at = models.DateTimeField(auto_now=True, verbose_name="Last Updated")
+
+RATE = (
+    (-1, "nieprzeczytana"),
+    (0, "brak oceny"),
+    (1, "1 gwiazdka"),
+    (2, "2 gwiazdki"),
+    (3, "3 gwiazdki"),
+    (4, "4 gwiazdki"),
+    (5, "5 gwiazdki"),
+)
+
+
+STATUS = (
+    ('unread', 'Nieprzeczytana'),
+    ('reading', 'W trakcie czytania'),
+    ('read', 'Przeczytana'),
+    ('borrowed', 'Wypożyczona'),
+)
+
+
+class Book(models.Model):
+    title = models.CharField(max_length=128)
+    author = models.CharField(max_length=128)
+    publication_year = models.IntegerField(null=True)
+    bookshelf = models.IntegerField(choices=BOOKSHELF)
+    rate = models.IntegerField(choices=RATE)
+
+    @property
+    def name(self):
+        return "{} {}".format(self.title, self.author)
 
     def __str__(self):
-        return f"{self.title} by {self.author}"
+        return self.name
 
-    class Meta:
-        verbose_name = "Book"
-        verbose_name_plural = "Books"
-        ordering = ["-added_at"]
+
+class BookCategory(models.Model):
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    name = models.CharField(max_length=128)
+
+    def __str__(self):
+        return self.name
+
+
+class BookRating(models.Model):
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    category = models.ForeignKey(BookCategory, on_delete=models.CASCADE)
+    rate = models.IntegerField(choices=RATE)
+
+
+class BookStatus(models.Model):
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    status = models.IntegerField(choices=STATUS)

@@ -1,4 +1,7 @@
-from django.shortcuts import render
-from django.http import HttpResponse
+from django.shortcuts import render, redirect
+from django.views import View
 
-# Create your views here.
+from .forms import BookForm
+from .models import Book, BOOKSHELF, RATE
+
+
