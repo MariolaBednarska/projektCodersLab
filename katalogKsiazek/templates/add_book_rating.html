@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Dodaj ocenę do książki</h1>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Dodaj ocenę</button>
+  </form>
+  <a href="{% url 'book_detail' book_id=kwargs.book_id %}">Powrót do szczegółów książki</a>
+{% endblock %}

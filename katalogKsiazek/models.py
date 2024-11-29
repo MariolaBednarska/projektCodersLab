@@ -13,7 +13,6 @@ BOOKSHELF = (
 
 
 RATE = (
-    (-1, "nieprzeczytana"),
     (0, "brak oceny"),
     (1, "1 gwiazdka"),
     (2, "2 gwiazdki"),
@@ -22,7 +21,6 @@ RATE = (
     (5, "5 gwiazdki"),
 )
 
-
 STATUS = (
     ('unread', 'Nieprzeczytana'),
     ('reading', 'W trakcie czytania'),
@@ -30,13 +28,12 @@ STATUS = (
     ('borrowed', 'Wypożyczona'),
 )
 
-
 class Book(models.Model):
     title = models.CharField(max_length=128)
     author = models.CharField(max_length=128)
-    publication_year = models.IntegerField(null=True)
-    bookshelf = models.IntegerField(choices=BOOKSHELF)
-    rate = models.IntegerField(choices=RATE)
+    publication_year = models.IntegerField(null=True, blank=True)
+    bookshelf = models.CharField(max_length=100)
+    rate = models.IntegerField(default=0)
 
     @property
     def name(self):
@@ -49,6 +46,7 @@ class Book(models.Model):
 class BookCategory(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     name = models.CharField(max_length=128)
+    description = models.TextField(null=True)
 
     def __str__(self):
         return self.name
