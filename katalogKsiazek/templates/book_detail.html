@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>{{ object.title }} - {{ object.author }}</h1>
+  <p><strong>Rok wydania:</strong> {{ object.publication_year }}</p>
+  <p><strong>Ocena:</strong> {{ object.rate }}</p>
+  <p><strong>Półka:</strong> {{ object.bookshelf }}</p>
+
+  <h3>Kategorie książki:</h3>
+  <ul>
+    {% for category in object.bookcategory_set.all %}
+      <li>{{ category.name }}: {{ category.description }}</li>
+    {% endfor %}
+  </ul>
+
+  <h3>Oceny książki:</h3>
+  <ul>
+    {% for rating in object.bookrating_set.all %}
+      <li>{{ rating.category.name }}: {{ rating.rate }} gwiazdek</li>
+    {% endfor %}
+  </ul>
+
+  <h3>Status książki:</h3>
+  <p>{{ object.bookstatus_set.last.status }}</p>
+
+  <a href="{% url 'add_book_category' book_id=object.pk %}">Dodaj kategorię</a> |
+  <a href="{% url 'add_book_rating' book_id=object.pk %}">Dodaj ocenę</a> |
+  <a href="{% url 'add_book_status' book_id=object.pk %}">Dodaj status</a>
+{% endblock %}
