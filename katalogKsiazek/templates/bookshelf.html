@@ -1,11 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Regał na książki</title>
-</head>
-<body>
+{% extends 'base.html' %}
 
-
-</body>
-</html>
+{% block content %}
+<h1>Regał książek</h1>
+<h2>Regał:</h2>
+<ul>
+    {% for shelf in shelves %}
+        <li><a href="{% url 'shelf_books' shelf %}">Półka {{ shelf }}</a></li>
+    {% endfor %}
+</ul>
+{% endblock %}

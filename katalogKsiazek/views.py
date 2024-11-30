@@ -3,7 +3,7 @@ from audioop import reverse
 from django.shortcuts import render, redirect
 from django.views import View
 from django.views.generic import ListView, DetailView, CreateView
-from .models import Book
+from .models import Book, BOOKSHELF
 from .forms import BookForm, BookCategoryForm, BookRatingForm, BookStatusForm
 
 # Widok listy książek
@@ -65,3 +65,15 @@ class AddBookStatusView(View):
             form.save()
             return redirect('book_detail', book_id=kwargs['book_id'])
         return render(request, 'add_book_status.html', {'form': form})
+
+# Widok regału z półkami
+class BookshelfView(View):
+    def get(self, request, *args, **kwargs):
+        shelves = [shelf for shelf, _ in BOOKSHELF]  # Pobiera listę półek
+        return render(request, 'bookshelf.html', {'shelves': shelves})
+
+# Widok książek na wybranej półce
+class ShelfBooksView(View):
+    def get(self, request, shelf_id, *args, **kwargs):
+        books = Book.objects.filter(bookshelf=str(shelf_id))  # Filtruje książki dla danej półki
+        return render(request, 'shelf_books.html', {'books': books, 'shelf_id': shelf_id})
