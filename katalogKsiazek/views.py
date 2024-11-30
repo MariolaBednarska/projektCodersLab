@@ -18,6 +18,14 @@ class BookDetailView(DetailView):
     template_name = 'book_detail.html'
     pk_url_kwarg = 'book_id'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['status_form'] = BookStatusForm(initial={'book': self.object})
+        context['rating_form'] = BookRatingForm(initial={'book': self.object})
+        context['categories'] = self.object.bookcategory_set.all()  # Wszystkie kategorie
+        context['ratings'] = self.object.bookrating_set.all()  # Wszystkie oceny
+        return context
+
 # Widok dodawania książki
 class AddBookView(CreateView):
     model = Book
@@ -77,3 +85,24 @@ class ShelfBooksView(View):
     def get(self, request, shelf_id, *args, **kwargs):
         books = Book.objects.filter(bookshelf=str(shelf_id))  # Filtruje książki dla danej półki
         return render(request, 'shelf_books.html', {'books': books, 'shelf_id': shelf_id})
+
+
+class EditBookStatusView(View):
+    def post(self, request, book_id, *args, **kwargs):
+        book = Book.objects.get(pk=book_id)
+        form = BookStatusForm(request.POST)
+        if form.is_valid():
+            status = form.save(commit=False)
+            status.book = book
+            status.save()
+        return redirect('book_detail', book_id=book.id)
+
+class EditBookRatingView(View):
+    def post(self, request, book_id, *args, **kwargs):
+        book = Book.objects.get(pk=book_id)
+        form = BookRatingForm(request.POST)
+        if form.is_valid():
+            rating = form.save(commit=False)
+            rating.book = book
+            rating.save()
+        return redirect('book_detail', book_id=book.id)

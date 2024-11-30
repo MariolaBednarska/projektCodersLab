@@ -1,29 +1,37 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <h1>{{ object.title }} - {{ object.author }}</h1>
-  <p><strong>Rok wydania:</strong> {{ object.publication_year }}</p>
-  <p><strong>Ocena:</strong> {{ object.rate }}</p>
-  <p><strong>Półka:</strong> {{ object.bookshelf }}</p>
+    <h1>{{ book.title }} by {{ book.author }}</h1>
+    <p>Year: {{ book.publication_year }}</p>
+    <p>Bookshelf: {{ book.get_bookshelf_display }}</p>
 
-  <h3>Kategorie książki:</h3>
-  <ul>
-    {% for category in object.bookcategory_set.all %}
-      <li>{{ category.name }}: {{ category.description }}</li>
-    {% endfor %}
-  </ul>
+    <h2>Status</h2>
+    <p>{{ book.bookstatus_set.last.status }}</p>
+    <form method="post" action="{% url 'edit_book_status' book.id %}">
+        {% csrf_token %}
+        {{ status_form.as_p }}
+        <button type="submit">Edit Status</button>
+    </form>
 
-  <h3>Oceny książki:</h3>
-  <ul>
-    {% for rating in object.bookrating_set.all %}
-      <li>{{ rating.category.name }}: {{ rating.rate }} gwiazdek</li>
-    {% endfor %}
-  </ul>
+    <h2>Rating</h2>
+    {% if book.rating %}
+        <p>Current rating: {{ book.rating.get_rate_display }}</p>
+    {% else %}
+        <p>No rating yet.</p>
+    {% endif %}
+    <form method="post" action="{% url 'edit_book_rating' book.id %}">
+        {% csrf_token %}
+        {{ rating_form.as_p }}
+        <button type="submit">Save Rating</button>
+    </form>
 
-  <h3>Status książki:</h3>
-  <p>{{ object.bookstatus_set.last.status }}</p>
+    <h2>Categories</h2>
+    <ul>
+        {% for category in categories %}
+        <li>{{ category.name }}: {{ category.description }}</li>
+        {% endfor %}
+    </ul>
 
-  <a href="{% url 'add_book_category' book_id=object.pk %}">Dodaj kategorię</a> |
-  <a href="{% url 'add_book_rating' book_id=object.pk %}">Dodaj ocenę</a> |
-  <a href="{% url 'add_book_status' book_id=object.pk %}">Dodaj status</a>
+    <a href="{% url 'bookshelf' %}">Back to bookshelf</a>
 {% endblock %}
+
