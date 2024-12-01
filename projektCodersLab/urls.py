@@ -23,7 +23,9 @@ from katalogKsiazek.views import (BookDetailView,
                                   AddBookRatingView,
                                   AddBookStatusView,
                                   EditBookRatingView,
-                                  EditBookStatusView)
+                                  EditBookStatusView,
+                                  EditBookCategoryView
+                                  )
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -36,4 +38,5 @@ urlpatterns = [
     path('book/<int:book_id>/status/add/', AddBookStatusView.as_view(), name='add_book_status'),
     path('book/<int:book_id>/status/edit/', EditBookStatusView.as_view(), name='edit_book_status'),
     path('book/<int:book_id>/rating/edit/', EditBookRatingView.as_view(), name='edit_book_rating'),
+    path('book/<int:book_id>/category/edit/', EditBookCategoryView.as_view(), name='edit_book_category'),
 ]
