@@ -1,37 +1,45 @@
 {% extends 'base.html' %}
 
 {% block content %}
+    <!-- Nagłówek książki -->
     <h1>{{ book.title }} by {{ book.author }}</h1>
-    <p>Year: {{ book.publication_year }}</p>
-    <p>Bookshelf: {{ book.get_bookshelf_display }}</p>
+    <p><strong>Year:</strong> {{ book.publication_year }}</p>
+    <p><strong>Bookshelf:</strong> {{ book.get_bookshelf_display }}</p>
 
+    <!-- Sekcja statusu -->
     <h2>Status</h2>
-    <p>{{ book.bookstatus_set.last.status }}</p>
-    <form method="post" action="{% url 'edit_book_status' book.id %}">
-        {% csrf_token %}
-        {{ status_form.as_p }}
-        <button type="submit">Edit Status</button>
-    </form>
+    <p>
+        {% if book.bookstatus_set.last %}
+            Current status: {{ book.bookstatus_set.last.get_status_display }}
+        {% else %}
+            No status assigned.
+        {% endif %}
+    </p>
+    <a href="{% url 'edit_book_status' book.id %}">Edit Status</a>
 
+
+    <!-- Sekcja oceny -->
     <h2>Rating</h2>
     {% if book.rating %}
         <p>Current rating: {{ book.rating.get_rate_display }}</p>
     {% else %}
         <p>No rating yet.</p>
     {% endif %}
-    <form method="post" action="{% url 'edit_book_rating' book.id %}">
-        {% csrf_token %}
-        {{ rating_form.as_p }}
-        <button type="submit">Save Rating</button>
-    </form>
+    <a href="{% url 'edit_book_rating' book.id %}">Edit Rating</a>
 
+
+    <!-- Sekcja kategorii -->
     <h2>Categories</h2>
     <ul>
         {% for category in categories %}
-        <li>{{ category.name }}: {{ category.description }}</li>
+            <li>{{ category.name }}: {{ category.description }}</li>
+        {% empty %}
+            <li>No categories assigned.</li>
         {% endfor %}
     </ul>
+    <a href="{% url 'edit_book_category' book.id %}">Edit Categories</a>
 
+
+    <!-- Powrót -->
     <a href="{% url 'bookshelf' %}">Back to bookshelf</a>
 {% endblock %}
-

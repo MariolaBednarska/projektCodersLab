@@ -55,8 +55,7 @@ ROOT_URLCONF = 'projektCodersLab.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'katalogKsiazek/../katalogKsiazek/templates']
-        ,
+        'DIRS': [BASE_DIR / 'katalogKsiazek/../katalogKsiazek/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

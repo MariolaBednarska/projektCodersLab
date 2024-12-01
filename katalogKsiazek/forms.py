@@ -11,6 +11,9 @@ class BookCategoryForm(forms.ModelForm):
         model = BookCategory
         fields = ['name', 'description']
 
+class BookCategoryEditForm(forms.Form):
+    category = forms.ChoiceField(choices=BookCategory.CATEGORY_CHOICES, label="Kategoria")
+
 class BookRatingForm(forms.ModelForm):
     class Meta:
         model = BookRating

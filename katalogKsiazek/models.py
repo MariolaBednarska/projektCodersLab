@@ -44,6 +44,18 @@ class Book(models.Model):
 
 
 class BookCategory(models.Model):
+    CATEGORY_CHOICES = (
+        (1, "Fantastyka"),
+        (2, "Literatura piękna polska"),
+        (3, "Literatura piękna obca"),
+        (4, "Obyczaj"),
+        (5, "Reportaż"),
+        (6, "Kryminał"),
+        (7, "Biografie"),
+        (8, "Historia"),
+        (9, "Sensacja"),
+    )
+
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     name = models.CharField(max_length=128)
     description = models.TextField(null=True)

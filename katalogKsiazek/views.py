@@ -1,10 +1,11 @@
 from audioop import reverse
 
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from django.views.generic import ListView, DetailView, CreateView
-from .models import Book, BOOKSHELF
-from .forms import BookForm, BookCategoryForm, BookRatingForm, BookStatusForm
+from .models import Book, BOOKSHELF, BookCategory
+from .forms import BookForm, BookCategoryForm, BookRatingForm, BookStatusForm, BookCategoryEditForm
+
 
 # Widok listy książek
 class BookListView(ListView):
@@ -20,10 +21,13 @@ class BookDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['status_form'] = BookStatusForm(initial={'book': self.object})
-        context['rating_form'] = BookRatingForm(initial={'book': self.object})
-        context['categories'] = self.object.bookcategory_set.all()  # Wszystkie kategorie
-        context['ratings'] = self.object.bookrating_set.all()  # Wszystkie oceny
+        book = self.object
+        context.update({
+            'book': book,
+            'status': book.bookstatus_set.last(),  # Ostatni status książki
+            'categories': book.bookcategory_set.all(),
+            'rating': book.rating if hasattr(book, 'rating') else None,
+        })
         return context
 
 # Widok dodawania książki
@@ -88,21 +92,68 @@ class ShelfBooksView(View):
 
 
 class EditBookStatusView(View):
+    def get(self, request, book_id, *args, **kwargs):
+        # Pobierz książkę i jej aktualny status
+        book = get_object_or_404(Book, pk=book_id)
+        status = book.status if hasattr(book, 'status') else None  # Zakładam, że `status` to relacja z `BookStatus`
+        form = BookStatusForm(instance=status)  # Jeśli status istnieje, wypełnij formularz danymi
+        return render(request, 'edit_book_status.html', {'form': form, 'book': book})
+
     def post(self, request, book_id, *args, **kwargs):
-        book = Book.objects.get(pk=book_id)
-        form = BookStatusForm(request.POST)
+        # Pobierz książkę
+        book = get_object_or_404(Book, pk=book_id)
+        # Stwórz formularz z przesłanymi danymi
+        form = BookStatusForm(request.POST, instance=book.status if hasattr(book, 'status') else None)
         if form.is_valid():
             status = form.save(commit=False)
             status.book = book
             status.save()
-        return redirect('book_detail', book_id=book.id)
+            return redirect('book_detail', book_id=book.id)
+        # Jeśli formularz jest nieprawidłowy, ponownie wyświetl formularz z błędami
+        return render(request, 'edit_book_status.html', {'form': form, 'book': book})
 
 class EditBookRatingView(View):
+    def get(self, request, book_id, *args, **kwargs):
+        # Pobierz książkę i jej aktualny rating
+        book = get_object_or_404(Book, pk=book_id)
+        rating = book.rating if hasattr(book, 'rating') else None  # Zakładam relację z `BookRating`
+        form = BookRatingForm(instance=rating)  # Formularz wypełniony istniejącymi danymi
+        return render(request, 'edit_book_rating.html', {'form': form, 'book': book})
+
     def post(self, request, book_id, *args, **kwargs):
-        book = Book.objects.get(pk=book_id)
-        form = BookRatingForm(request.POST)
+        # Pobierz książkę
+        book = get_object_or_404(Book, pk=book_id)
+        # Stwórz formularz z przesłanymi danymi
+        form = BookRatingForm(request.POST, instance=book.rating if hasattr(book, 'rating') else None)
         if form.is_valid():
             rating = form.save(commit=False)
             rating.book = book
             rating.save()
-        return redirect('book_detail', book_id=book.id)
+            return redirect('book_detail', book_id=book.id)
+        # Jeśli formularz jest niepoprawny
+        return render(request, 'edit_book_rating.html', {'form': form, 'book': book})
+
+class EditBookCategoryView(View):
+    def get(self, request, book_id, *args, **kwargs):
+        # Pobierz książkę i jej istniejące kategorie
+        book = get_object_or_404(Book, pk=book_id)
+        form = BookCategoryEditForm()  # Formularz bez danych początkowych
+        categories = book.bookcategory_set.all()  # Założenie: relacja do `BookCategory`
+        return render(request, 'edit_book_category.html', {'form': form, 'book': book, 'categories': categories})
+
+    def post(self, request, book_id, *args, **kwargs):
+        # Pobierz książkę
+        book = get_object_or_404(Book, pk=book_id)
+        # Obsługa formularza
+        form = BookCategoryEditForm(request.POST)
+        if form.is_valid():
+            category_id = form.cleaned_data['category']
+            category_name = dict(BookCategory.CATEGORY_CHOICES).get(int(category_id))
+            # Dodanie lub aktualizacja kategorii
+            category, _ = BookCategory.objects.get_or_create(book=book, name=category_name)
+            category.save()
+            return redirect('book_detail', book_id=book.id)
+        # Jeśli formularz jest niepoprawny
+        categories = book.bookcategory_set.all()
+        return render(request, 'edit_book_category.html', {'form': form, 'book': book, 'categories': categories})
+
