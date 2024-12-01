@@ -1,0 +1,48 @@
+.btn {
+    display: inline-block;
+    padding: 10px 15px;
+    margin-top: 20px;
+    background-color: #4f3b78;
+    color: white;
+    text-decoration: none;
+    border-radius: 10px;
+    font-size: 16px;
+}
+.btn:hover {
+    background-color: #927fbf;
+}
+
+img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    max-width: 100%;
+    height: auto;
+    border-radius: 20px;
+}
+
+body {
+    background-color: #f4eeff;
+    background-size: cover;
+    background-position: center center;
+    background-attachment: fixed;
+}
+
+/* Wycentrowanie treści strony */
+.content, .container {
+    margin: 0 auto;
+    max-width: 1200px;
+    padding: 20px;
+    text-align: center;
+}
+
+ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+li {
+    margin-bottom: 10px;
+}

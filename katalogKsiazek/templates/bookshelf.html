@@ -2,10 +2,13 @@
 
 {% block content %}
 <h1>Regał książek</h1>
-<h2>Regał:</h2>
+<h2>Półki:</h2>
 <ul>
     {% for shelf in shelves %}
         <li><a href="{% url 'shelf_books' shelf %}">Półka {{ shelf }}</a></li>
     {% endfor %}
 </ul>
+
+    <!-- Przycisku do formularza dodawania książki -->
+<a href="{% url 'add_book' %}" class="btn">Dodaj nową książkę 📖</a>
 {% endblock %}
