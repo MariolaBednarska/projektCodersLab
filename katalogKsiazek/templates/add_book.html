@@ -3,7 +3,7 @@
 {% block content %}
     <form action="" method="post">
         {% csrf_token %}
-        {{ form }}
-        <input type="submit" value="send">
-    </form>
+        {{ form.as_p }}
+        <button type="submit">Dodaj książkę</button>
+        </form>
 {% endblock %}

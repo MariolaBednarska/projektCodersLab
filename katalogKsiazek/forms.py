@@ -23,3 +23,4 @@ class BookStatusForm(forms.ModelForm):
     class Meta:
         model = BookStatus
         fields = ['book', 'status']
+

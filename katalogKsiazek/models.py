@@ -32,7 +32,7 @@ class Book(models.Model):
     title = models.CharField(max_length=128)
     author = models.CharField(max_length=128)
     publication_year = models.IntegerField(null=True, blank=True)
-    bookshelf = models.CharField(max_length=100)
+    bookshelf = models.IntegerField(choices=BOOKSHELF, default=1)
     rate = models.IntegerField(default=0)
 
     @property
