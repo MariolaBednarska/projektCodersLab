@@ -1,10 +1,13 @@
-from audioop import reverse
+from django.db import models
+from django.db.models import Q
+from django.urls import reverse
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from django.views.generic import ListView, DetailView, CreateView
 from .models import Book, BOOKSHELF, BookCategory
 from .forms import BookForm, BookCategoryForm, BookRatingForm, BookStatusForm, BookCategoryEditForm
+
 
 
 # Widok listy książek
@@ -157,3 +160,12 @@ class EditBookCategoryView(View):
         categories = book.bookcategory_set.all()
         return render(request, 'edit_book_category.html', {'form': form, 'book': book, 'categories': categories})
 
+class SearchBooksView(View):
+    def get(self, request, *args, **kwargs):
+        query = request.GET.get('query', None)
+        books = None
+        if query:  # Jeśli jest wprowadzony tekst wyszukiwania
+            books = Book.objects.filter(
+                Q(title__icontains=query) | Q(author__icontains=query) | Q(bookcategory__name__icontains=query)
+            ).distinct()
+        return render(request, 'search_books.html', {'books': books, 'query': query})

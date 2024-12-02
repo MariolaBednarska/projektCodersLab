@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Wyszukaj książki</h1>
+<form method="get" action="{% url 'search_books' %}">
+    <input type="text" name="query" placeholder="Wpisz tytuł, autora lub kategorię" value="{{ query }}">
+    <button type="submit">Szukaj</button>
+</form>
+
+{% if books %}
+    <h2>Wyniki wyszukiwania:</h2>
+    <ul>
+        {% for book in books %}
+            <li>
+                <strong>{{ book.title }}</strong> by {{ book.author }}
+                - Półka: {{ book.get_bookshelf_display }}
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>Brak wyników dla podanego zapytania.</p>
+{% endif %}
+{% endblock %}
+
+
