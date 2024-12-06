@@ -17,10 +17,11 @@ class BookCategoryEditForm(forms.Form):
 class BookRatingForm(forms.ModelForm):
     class Meta:
         model = BookRating
-        fields = ['book', 'category', 'rate']
+        fields = ['rate']
+        labels = {'rate': 'Wybierz ocenę'}
 
 class BookStatusForm(forms.ModelForm):
     class Meta:
         model = BookStatus
-        fields = ['book', 'status']
-
+        fields = ['status']
+        labels = {'status': 'Wybierz status'}
