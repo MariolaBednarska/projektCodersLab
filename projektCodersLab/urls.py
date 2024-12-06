@@ -40,5 +40,4 @@ urlpatterns = [
     path('book/<int:book_id>/rating/edit/', EditBookRatingView.as_view(), name='edit_book_rating'),
     path('book/<int:book_id>/category/edit/', EditBookCategoryView.as_view(), name='edit_book_category'),
     path('search/', SearchBooksView.as_view(), name='search_books'),
-
 ]

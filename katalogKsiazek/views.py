@@ -27,9 +27,9 @@ class BookDetailView(DetailView):
         book = self.object
         context.update({
             'book': book,
-            'status': book.bookstatus_set.last(),  # Ostatni status książki
+            'status': book.statuses.last(),  # Pobierz ostatni status
+            'rating': book.ratings.last(),  # Pobierz ostatnią ocenę
             'categories': book.bookcategory_set.all(),
-            'rating': book.rating if hasattr(book, 'rating') else None,
         })
         return context
 
@@ -61,12 +61,15 @@ class AddBookRatingView(View):
         form = BookRatingForm()
         return render(request, 'add_book_rating.html', {'form': form})
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request, book_id, *args, **kwargs):
+        book = get_object_or_404(Book, pk=book_id)
         form = BookRatingForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('book_detail', book_id=kwargs['book_id'])
-        return render(request, 'add_book_rating.html', {'form': form})
+            rating = form.save(commit=False)
+            rating.book = book
+            rating.save()
+            return redirect('book_detail', book_id=book_id)
+        return render(request, 'add_book_rating.html', {'form': form, 'book': book})
 
 # Widok dodawania statusu książki
 class AddBookStatusView(View):
@@ -74,12 +77,15 @@ class AddBookStatusView(View):
         form = BookStatusForm()
         return render(request, 'add_book_status.html', {'form': form})
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request, book_id, *args, **kwargs):
+        book = get_object_or_404(Book, pk=book_id)
         form = BookStatusForm(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('book_detail', book_id=kwargs['book_id'])
-        return render(request, 'add_book_status.html', {'form': form})
+            status = form.save(commit=False)
+            status.book = book
+            status.save()
+            return redirect('book_detail', book_id=book_id)
+        return render(request, 'add_book_status.html', {'form': form, 'book': book})
 
 # Widok regału z półkami
 class BookshelfView(View):

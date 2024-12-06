@@ -12,7 +12,7 @@
         {% if book.bookstatus_set.last %}
             Current status: {{ book.bookstatus_set.last.get_status_display }}
         {% else %}
-            No status assigned.
+            <p>Status: {{ status.status|default:"No status assigned" }}</p>
         {% endif %}
     </p>
     <a href="{% url 'edit_book_status' book.id %}">Edit Status</a>
@@ -23,7 +23,7 @@
     {% if book.rating %}
         <p>Current rating: {{ book.rating.get_rate_display }}</p>
     {% else %}
-        <p>No rating yet.</p>
+        <p>Ocena: {{ rating.rate|default:"No rating yet" }}</p>
     {% endif %}
     <a href="{% url 'edit_book_rating' book.id %}">Edit Rating</a>
 
