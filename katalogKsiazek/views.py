@@ -175,3 +175,8 @@ class SearchBooksView(View):
                 Q(title__icontains=query) | Q(author__icontains=query) | Q(bookcategory__name__icontains=query)
             ).distinct()
         return render(request, 'search_books.html', {'books': books, 'query': query})
+
+class AllBooksView(ListView):
+    model = Book
+    template_name = 'all_books.html'  # Stworzysz ten szablon
+    context_object_name = 'books'
