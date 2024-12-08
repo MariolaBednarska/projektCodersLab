@@ -65,16 +65,17 @@ class BookCategory(models.Model):
 
 
 class BookRating(models.Model):
-    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='ratings')  # Użycie `related_name`
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='ratings')
     rate = models.IntegerField(choices=RATE)
 
     def __str__(self):
-        return dict(RATE).get(self.rate, 'Brak oceny')  # Czytelne wyświetlanie oceny
+        return dict(RATE).get(self.rate, 'Brak oceny')
 
 
 class BookStatus(models.Model):
-    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='statuses')  # Użycie `related_name`
-    status = models.CharField(max_length=10, choices=STATUS)  # Powinno być CharField dla wartości tekstowej
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='statuses')
+    status = models.CharField(max_length=10, choices=STATUS)
 
     def __str__(self):
         return dict(STATUS).get(self.status, 'Nieznany status')  # Czytelne wyświetlanie statusu
+
