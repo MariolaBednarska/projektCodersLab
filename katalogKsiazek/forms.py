@@ -1,5 +1,6 @@
 from django import forms
-from .models import Book, BookCategory, BookRating, BookStatus
+from .models import Book, BookCategory, BookRating, BookStatus, Borrower
+
 
 class BookForm(forms.ModelForm):
     class Meta:
@@ -25,3 +26,13 @@ class BookStatusForm(forms.ModelForm):
         model = BookStatus
         fields = ['status']
         labels = {'status': 'Wybierz status'}
+
+class BorrowerForm(forms.ModelForm):
+    class Meta:
+        model = Borrower
+        fields = ['first_name', 'last_name', 'email']
+        labels = {
+            'first_name': 'Imię',
+            'last_name': 'Nazwisko',
+            'email': 'Email'
+        }
